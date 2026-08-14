@@ -1,0 +1,20 @@
+[
+  {
+    "line": 97,
+    "mutation": "=== → !==",
+    "snippet": "return { digits: (m[1] === '-' ? -digits : digits), scale: Math.pow(10, frac.length) };",
+    "reason": "Equivalent, and worth writing down because it is not obvious. This applies the minus sign when a figure is parsed into exact digits. Inverting the test flips the sign of every figure that goes through the parser — but the only caller, lineTotal, always parses exactly two of them, the quantity and the rate, and then multiplies. Both flip together, so the product is unchanged for every possible input: a positive line stays positive and a discount line stays negative. Confirmed by hand as well as by reasoning: the whole suite passes with the comparison inverted. That a discount keeps its sign, and that it comes off the subtotal before VAT, are asserted in section 10."
+  },
+  {
+    "line": 130,
+    "mutation": "|| → &&",
+    "snippet": "if (value === undefined || value === null || value === '') return 0;",
+    "reason": "Equivalent. This is the early return in vatRateOf for a rate that was never given. Weakening the test lets null and the empty string fall through to the parsing path instead — where Number(null) and Number('') are both 0, which is inside the permitted range, so 0 comes back either way. No input produces a different rate. That an absent, null or empty rate all mean no VAT, and that zero-rated is kept as a real answer rather than treated as missing, are asserted in sections 7 and 11."
+  },
+  {
+    "line": 144,
+    "mutation": "=== → !==",
+    "snippet": "const o = (opts && typeof opts === 'object') ? opts : {};",
+    "reason": "Equivalent. This normalises the options bag. The versions differ only for a value that is truthy but not an object — a string, a number, true, a function — which the original replaces with {} and the mutant keeps. Either way the only property read off it is o.currency, and none of those types carries one, so it is undefined in both cases and the currency falls back to the invoice's own, then to sterling. There is no input for which a different total comes back."
+  }
+]
